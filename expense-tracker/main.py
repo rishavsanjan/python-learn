@@ -1,4 +1,5 @@
-expense = []
+import csv
+import os
 
 def start_app():
 
@@ -25,8 +26,6 @@ def start_app():
 
             break
 
-            
-
         if choice == 1:
             show_expense()
         elif choice == 2:
@@ -39,11 +38,15 @@ def start_app():
         
 
 def show_expense():
-    if len(expense) == 0:
+    with open("expenses.csv", "r") as file:
+        reader = csv.DictReader(file)
+        expenses = list(reader)
+
+    if len(expenses) == 0:
         print("No expenses to show")
         return
 
-    for index, item in enumerate(expense):
+    for index, item in enumerate(expenses):
         print(
             index + 1,
             item["category"],
@@ -81,16 +84,34 @@ def add_expense():
     amount = add_amount()
     description = add_catgeory_description("Enter the description : ") 
 
-    expense.append({
+    expense = {
         "category": category,
         "amount": amount,
-        "description" :description
-    })
+        "description": description
+    }
 
+    if os.path.getsize("expenses.csv") == 0:
+        with open("expenses.csv", "w", newline="") as file:
+            fieldnames = ["category", "amount", "description"]
+            
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerow(expense) 
+    else:
+        with open("expenses.csv", "a", newline="") as file:
+            fieldnames = ["category", "amount", "description"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow(expense)
+        
     print("Expense added")
 
 def delete_expense():
-    if len(expense) == 0:
+    with open("expenses.csv", "r") as file:
+        reader = csv.DictReader(file)
+        expenses = list(reader)
+
+
+    if len(expenses) == 0:
         print("No expense to delete")
         return
     show_expense()
@@ -101,12 +122,20 @@ def delete_expense():
             print("Invalid input!")
             continue  
 
-        if index < 1 or index > len(expense):
+        if index < 1 or index > len(expenses):
             print("Invalid input!")
             continue
         break
+    
 
-    expense.pop(index - 1)
+    expenses.pop(index - 1)
+
+    with open("expenses.csv", "w", newline="") as file:
+        fieldnames = ["category", "amount", "description"]
+
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(expenses)
 
     print("Expense deleted")
     
