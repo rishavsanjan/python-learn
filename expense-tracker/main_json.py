@@ -1,4 +1,4 @@
-import csv
+import json
 import os
 
 def start_app():
@@ -38,10 +38,13 @@ def start_app():
         
 
 def show_expense():
-    with open("expenses.csv", "r") as file:
-        reader = csv.DictReader(file)
-        expenses = list(reader)
-
+    try:
+        with open("expenses.json", "r" ) as file:
+            expenses = json.load(file)
+    except (json.JSONDecodeError, FileNotFoundError):
+        print("No expenses found")
+        return
+    
     if len(expenses) == 0:
         print("No expenses to show")
         return
@@ -96,26 +99,29 @@ def add_expense():
         "description": description
     }
 
-    if os.path.getsize("expenses.csv") == 0:
-        with open("expenses.csv", "w", newline="") as file:
-            fieldnames = ["category", "amount", "description"]
-            
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow(expense) 
-    else:
-        with open("expenses.csv", "a", newline="") as file:
-            fieldnames = ["category", "amount", "description"]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writerow(expense)
-        
+    try:
+        with open("expenses.json", "r") as file:
+            expenses = json.load(file)
+
+    except (json.JSONDecodeError, FileNotFoundError):
+        expenses = []
+
+    expenses.append(expense)
+
+    with open("expenses.json", "w") as file:
+        json.dump(expenses, file, indent=4)
+
     print("Expense added")
 
 def delete_expense():
-    with open("expenses.csv", "r") as file:
-        reader = csv.DictReader(file)
-        expenses = list(reader)
-
+    try:
+        with open("expenses.json", "r") as file:
+                expenses = json.load(file)
+    
+    except (json.JSONDecodeError, FileNotFoundError):
+        expenses = []
+        print("No expenses to delete")
+        return
 
     if len(expenses) == 0:
         print("No expense to delete")
@@ -136,12 +142,8 @@ def delete_expense():
 
     expenses.pop(index - 1)
 
-    with open("expenses.csv", "w", newline="") as file:
-        fieldnames = ["category", "amount", "description"]
-
-        writer = csv.DictWriter(file, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(expenses)
+    with open("expenses.json", "w") as file:
+        json.dump(expenses, file, indent=4)
 
     print("Expense deleted")
 
