@@ -12,14 +12,24 @@ def start_app():
         print("4. Delete a contact")
         print("5. Exit the app")
 
-        choice = int(input("Choose any one of the operation : "))
+        try:
+            choice = int(input("Choose any one of the operation : "))
+        except ValueError:
+            print("Choose a valid option")
+            continue
 
+        if choice < 1 or choice > 5:
+            print("Invalid input")
+            continue
+        
         if choice == 1:
             create_contact()
         elif choice == 2:
             read_contact()
         elif choice == 3:
             update_contact()
+        elif choice == 4:
+            delete_contact()
         else:
             print("Breaking the app")
             break
@@ -28,23 +38,20 @@ def start_app():
 
 def create_contact():
     while True:
-        name = input("Enter contact name : ").lower()
+        name = input("Enter contact name : ").lower().strip()
 
         number = input("Enter contact number : ")
 
-        for char in number:
-            if char.isdigit():
-                continue
+        if not number.isdigit():
             print("Wrong number")
-            break
-
+            continue
 
         contacts[name] = number
         print("Contact added")
         break
 
 def  read_contact():
-    name = input("Enter the contact name : ").lower()
+    name = input("Enter the contact name : ").lower().strip()
     info = contacts.get(name)
 
     if not info:
@@ -53,21 +60,31 @@ def  read_contact():
         print("The contact number is ", info)
 
 def update_contact():
-    print("Do you want to update name or number ?")
-    print("1. Update name")
-    print("2. Update number")
+    while True:
+        print("Do you want to update name or number ?")
+        print("1. Update name")
+        print("2. Update number")
 
-    choice = int(input("Enter number :"))
+        try:
+            choice = int(input("Enter number :"))
+        except ValueError:
+            print("Invalid input")
+            continue
+        if choice < 1 or choice > 2:
+            print("Invalid input")
+            continue
 
-    if choice == 1:
-        update_name()
-    elif choice  == 2:
-        update_number()
+        if choice == 1:
+            update_name()
+        elif choice  == 2:
+            update_number()
+
+        break
     
 
 def update_number():
     while True:
-        name = input("Enter name of the contact that you want to update: ")
+        name = input("Enter name of the contact that you want to update: ").lower().strip()
 
         info = contacts.get(name)
 
@@ -81,7 +98,7 @@ def update_number():
 
 def update_name():
     while True:
-        name = input("Enter old name : ")
+        name = input("Enter old name : ").lower().strip()
 
         info = contacts.get(name)
 
@@ -89,15 +106,19 @@ def update_name():
             print("Wrong name")
             continue
         else:
-            new_name = input("Enter the new name : ")
+            new_name = input("Enter the new name : ").lower().strip()
             contacts.pop(name)
             contacts[new_name] = info   
         break
 
 def delete_contact():
     while True:
-        name = input("Enter the name of the contact that you want to delete : ")
-        if contacts.pop(name):
+        name = input("Enter the name of the contact that you want to delete : ").lower().strip()
+
+        info = contacts.get(name)
+
+        if info:
+            contacts.pop(name)
             print("Contact deleted")
             break
         else:
