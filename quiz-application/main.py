@@ -1,6 +1,5 @@
-score = 0
-class Question:
-    
+import json
+class Question:    
     def __init__(self, question_text, options, correct_answer):
         self.question_text = question_text
         self.options = options
@@ -9,9 +8,10 @@ class Question:
     def check_answer(self, answer):     
             if self.options[answer - 1] == self.correct_answer:
                 print("Correct!")
-                self.score += 1
+                return True
             else:
                 print("Wrong!")
+                return False
 
 
     def print_question(self):
@@ -27,23 +27,35 @@ class Question:
                 print("Invalid input!")
                 continue    
 
-            if answer < 1 or answer > 4:
+            if answer < 1 or answer > len(self.options):
                 print("Invalid input!")
                 continue
 
             break
 
-        self.check_answer(answer)
+        is_correct = self.check_answer(answer)
 
-    def print_score(self):
-        print("The score is ", self.score, "/3")
+        return is_correct
 
-q1 = Question("Where is the capital of India ? ", ["Mumbai", "New Delhi", "Indore", "Kolkata"], "New Delhi")
-q1.print_question()
-q1 = Question("Where is the capital of Maharashtra ? ", ["Pune", "Thane", "Vadodra", "Mumbai"], "Mumbai")
-q1.print_question()
-q1 = Question("Where is the capital of Madhya Pardesh ? ", ["Bhopal", "Indore", "Jabalpur", "Sagar"], "Bhopal")
 
-q1.print_question()
+score = 0
 
-q1.print_score()
+with open("questions.json", "r") as file:
+    questionsFromJSON = json.load(file)
+
+questions = []
+
+for question in questionsFromJSON:
+    question_text = question["question_text"]
+    options = question["options"]
+    correct_answer = question["correct_answer"]
+    q = Question(question_text, options, correct_answer)
+    questions.append(q)
+
+for question in questions:
+    is_correct = question.print_question()
+    if is_correct:
+        score += 1
+
+print("Your score:", score, "/", len(questions))
+

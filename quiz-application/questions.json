@@ -1,0 +1,27 @@
+[
+    {
+        "question_text": "What does CPU stand for?",
+        "options": ["Central Processing Unit", "Computer Personal Unit", "Central Program Utility", "Control Processing User"],
+        "correct_answer": "Central Processing Unit"
+    },
+    {
+        "question_text": "Which data structure follows the LIFO principle?",
+        "options": ["Queue", "Stack", "Array", "Linked List"],
+        "correct_answer": "Stack"
+    },
+    {
+        "question_text": "How many bits are there in one byte?",
+        "options": ["4", "8", "16", "32"],
+        "correct_answer": "8"
+    },
+    {
+        "question_text": "Which of the following is a programming language?",
+        "options": ["HTML", "CSS", "Python", "HTTP"],
+        "correct_answer": "Python"
+    },
+    {
+        "question_text": "Which data structure follows the FIFO principle?",
+        "options": ["Stack", "Queue", "Tree", "Graph"],
+        "correct_answer": "Queue"
+    }
+]
